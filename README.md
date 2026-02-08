@@ -34,6 +34,7 @@ El sistema está pensado como un nodo autónomo de recolección de datos, útil 
 
 ## PINOUT
 
+## GPS
 
 |  ESP32    |  GPS6MV2      |
 |-----------|---------------|
@@ -42,7 +43,8 @@ El sistema está pensado como un nodo autónomo de recolección de datos, útil 
 |   GPIO16  |   TX          |
 |   GND     |   GND         |
 
----
+
+## MICROSD
 
 | ESP32     |    MICROSD    |
 |-----------|---------------|
@@ -52,3 +54,20 @@ El sistema está pensado como un nodo autónomo de recolección de datos, útil 
 |   GPIO23  |     MOSI      |
 |   GPIO18  |     SCK       |
 |   GPIO5   |     CS        |
+
+
+## LED GPS
+
+| ESP32     |    LED     | Resistencia (4.7k Ohm)
+|-----------|------------|-------------
+|  GPIO13   |            |     X
+|           |  (+) LED   |     X
+|  GND      |  (-) LED   |
+
+## LED WIFI
+
+| ESP32     |    LED     | Resistencia (4.7k Ohm)
+|-----------|------------|-------------
+|  GPIO12   |            |     X
+|           |  (+) LED   |     X
+|  GND      |  (-) LED   |

@@ -34,13 +34,14 @@
 #include <SD.h>
 #include <WiFi.h>
 
+
 //#define EEPROM_SIZE 1
 #define RX 16
 #define TX 17
-#define MAX_NETWORKS 20
-#define WIFI_LED 21
-#define GPS_LED 13
 
+#define MAX_NETWORKS 20
+#define WIFI_LED 12
+#define GPS_LED 13
 
 int sck = 18;
 int miso = 19;
@@ -85,8 +86,39 @@ void setup() {
     Serial.println("SDCard Ready.");
     //printSavedLocations();
   }
-
+    checkSD();
+  //initScreen();
   WiFi.begin();
+}
+
+
+void checkSD(){
+  Serial.println("Checking SDCard");
+  uint8_t cardType = SD.cardType();
+  if (cardType == CARD_NONE) {
+    error("No se detecta tarjeta");
+    return;
+  }
+
+  if (cardType == CARD_MMC) Serial.println("MMC");
+  else if (cardType == CARD_SD) Serial.println("SDSC");
+  else if (cardType == CARD_SDHC) Serial.println("SDHC");
+  else Serial.println("DESCONOCIDA");
+
+
+   uint64_t cardSize = SD.cardSize() / (1024 * 1024);
+  Serial.printf("Tamaño: %llu MB\n", cardSize);
+
+  // Prueba de escritura
+  File file = SD.open("/test.txt", FILE_WRITE);
+  if (!file) {
+    error("❌ Error al abrir archivo para escribir");
+    return;
+  }
+
+  file.println("ESP32 SD test OK");
+  file.close();
+  Serial.println("✅ Escritura OK");
 }
 
 void saveToFile(Location &location){
@@ -114,6 +146,8 @@ void loop() {
         saveToFile(loc);
       }
   }
+
+  delay(5000);
  
 }
 
@@ -146,7 +180,7 @@ bool scanGPS(Location &location){
   
     while (GPS.available()) {
           char c = GPS.read();
-          //Serial.print(c);
+          Serial.print(c);
           gps.encode(c);
       }
       
@@ -202,31 +236,33 @@ String buildLine(Location &loc, Networks &net) {
 }
 
 void error(String message){
-  Serial.println(message);
-  int status = HIGH;
-  for (int i=0;i<=20;i++){
-      
-      if (i%2!=0){
-        status = LOW;
-      }
-      else{
-        status = HIGH;
-      }
+    Serial.println(message);
+    
+      int status = HIGH;
+      for (int i=0;i<=20;i++){
+          
+          if (i%2!=0){
+            status = LOW;
+          }
+          else{
+            status = HIGH;
+          }
 
-      digitalWrite(GPS_LED, status);
-      digitalWrite(WIFI_LED, status);
-      delay(100);
-    }
+          digitalWrite(GPS_LED, status);
+          digitalWrite(WIFI_LED, status);
+          delay(100);
+        }
 }
 
 void banner(){
   int status = HIGH;    
-  Serial.println("_,---._  ,-- Beijing Mushroom");
-  Serial.println(",' _____ `.");
-  Serial.println("'-( \ / )-'");
-  Serial.println("\(_)/");
-  Serial.println(") (");
-  Serial.println("\"\"\"");
+  // Serial.println("_,---._  ,-- Beijing Mushroom");
+  // Serial.println(",' _____ `.");
+  // Serial.println("'-( \ / )-'");
+  // Serial.println("\(_)/");
+  // Serial.println(") (");
+  // Serial.println("\"\"\"");
+
     for (int i=0;i<=3;i++){
       
       if (i%2!=0){
@@ -241,6 +277,4 @@ void banner(){
       digitalWrite(WIFI_LED, status);
       delay(200);
     }
-
 }
-
