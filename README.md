@@ -71,3 +71,8 @@ El sistema está pensado como un nodo autónomo de recolección de datos, útil 
 |  GPIO12   |            |     X
 |           |  (+) LED   |     X
 |  GND      |  (-) LED   |
+
+
+Verde: WiFi
+Amarillo: GPS
+ROJO: Error => Pendiente.
