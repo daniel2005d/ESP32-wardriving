@@ -180,22 +180,19 @@ bool scanGPS(Location &location){
   
     while (GPS.available()) {
           char c = GPS.read();
-          Serial.print(c);
+          //Serial.print(c);
           gps.encode(c);
       }
       
       if (gps.location.isValid() && gps.location.isUpdated()){
           double lat = gps.location.lat();
           double lon = gps.location.lng();
-          //Serial.print("https://www.google.com/maps?q=");
-          //https://www.google.com/maps/dir/LAT1,LON1/LAT2,LON2/LAT3,LON3
-          // Serial.print(lat);
-          // Serial.print(",");
-          // Serial.println(lon);
+          if (lat > 0){
+              location.latitude = lat;
+              location.longitude = lon;
+              return true;
+          }
           
-          location.latitude = lat;
-          location.longitude = lon;
-          return true;
       }
 
       return false;

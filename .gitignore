@@ -1,0 +1,7 @@
+.venv
+*.json
+__pycache__
+.vscode
+*.pyc
+*.pyo  
+*.log
