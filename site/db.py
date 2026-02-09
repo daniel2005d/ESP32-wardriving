@@ -15,8 +15,10 @@ class DataBase:
     
 
     def save_network(self, line:str, delimiter='|'):
+        point = None
         session = self._session()
         fragments = line.split(delimiter)
+        
         if len(fragments) != 6:
             raise Exception(f'Line {line} must have 5 fields.')
         stmt_network = insert(Network).values(
@@ -29,17 +31,27 @@ class DataBase:
         )
 
         session.execute(stmt_network)
-        stmt_locations = insert(Location).values(
-            bssid = fragments[1],
-            latitude = fragments[4],
-            longitude = fragments[5]
-        ).on_conflict_do_nothing(
-            index_elements=['bssid', 'latitude', 'longitude']
-        )
 
-        session.execute(stmt_locations)
+        longitude = fragments[5]
+        latitude = fragments[4]
+        if float(longitude) < 0: 
+            stmt_locations = insert(Location).values(
+                bssid = fragments[1],
+                latitude = fragments[4],
+                longitude = fragments[5]
+            ).on_conflict_do_nothing(
+                index_elements=['bssid', 'latitude', 'longitude']
+            )
+
+
+            point = f'{fragments[4]},{fragments[5]}'
+        
+            session.execute(stmt_locations)
+
         session.commit()
         session.close()
+
+        return point
 
 
 class Network(Base):
